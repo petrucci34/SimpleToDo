@@ -15,10 +15,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.IOException;
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,9 +58,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .setName("TODO List")
+                .setUrl(Uri.parse("http://www.korhanbircan.com"))
                 .build();
         return new Action.Builder(Action.TYPE_VIEW)
                 .setObject(object)
@@ -107,32 +102,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-    }
-
-    private void loadItemsFromFile() {
-        File toDoFile = getToDoFile();
-
-        try {
-            items = new ArrayList<String>(FileUtils.readLines(toDoFile));
-        } catch (IOException exception) {
-            items = new ArrayList<String>();
-            exception.printStackTrace();
-        }
-    }
-
-    private void writeItems() {
-        File toDoFile = getToDoFile();
-
-        try {
-            FileUtils.writeLines(toDoFile, items);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private File getToDoFile() {
-        File filesDirectory = getFilesDir();
-        File toDoFile = new File(filesDirectory, "ToDo.txt");
-        return toDoFile;
     }
 }
