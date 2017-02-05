@@ -15,6 +15,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -101,5 +102,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void loadItemsFromFile() {
+        File toDoFile = getToDoFile();
+
+        try {
+            items = new ArrayList<String>(FileUtils.readLines(toDoFile));
+        } catch (IOException exception) {
+            items = new ArrayList<String>();
+            exception.printStackTrace();
+        }
+    }
+
+    private void writeItems() {
+        File toDoFile = getToDoFile();
+
+        try {
+            FileUtils.writeLines(toDoFile, items);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private File getToDoFile() {
+        File filesDirectory = getFilesDir();
+        File toDoFile = new File(filesDirectory, "ToDo.txt");
+        return toDoFile;
     }
 }
