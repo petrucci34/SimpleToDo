@@ -15,7 +15,10 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         lvItems = (ListView) findViewById(R.id.lvItems);
-        items = new ArrayList<>();
+        loadItemsFromFile();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
 
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
         etNewItem.setText("");
+        writeItems();
     }
 
     /**
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                                                    long id) {
                         items.remove(position);
                         itemsAdapter.notifyDataSetChanged();
+                        writeItems();
                         return true;
                     }
                 }
