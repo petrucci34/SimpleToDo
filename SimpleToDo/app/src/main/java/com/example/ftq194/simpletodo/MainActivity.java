@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             String selectedItemText = data.getExtras().getString("selectedItemText");
             items.set(mSelectedItemPosition, selectedItemText);
+            itemsAdapter.notifyDataSetChanged();
         }
     }
 
