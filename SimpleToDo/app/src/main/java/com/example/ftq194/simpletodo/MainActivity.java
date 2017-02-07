@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+
+    private PersistenceHelper mPersistenceHelper;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -32,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lvItems = (ListView) findViewById(R.id.lvItems);
-        loadItemsFromFile();
+        mPersistenceHelper = new PersistenceHelper(getApplicationContext());
+
+        lvItems = (ListView)findViewById(R.id.lvItems);
+        items = mPersistenceHelper.loadItems();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
 
@@ -49,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
         etNewItem.setText("");
-        writeItems();
+        mPersistenceHelper.persistItems(items);
     }
 
     /**
@@ -97,7 +101,8 @@ public class MainActivity extends AppCompatActivity {
                                                    long id) {
                         items.remove(position);
                         itemsAdapter.notifyDataSetChanged();
-                        writeItems();
+                        mPersistenceHelper.persistItems(items);
+
                         return true;
                     }
                 }

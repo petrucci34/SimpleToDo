@@ -1,6 +1,6 @@
 package com.example.ftq194.simpletodo;
 
-import android.widget.ArrayAdapter;
+import android.content.Context;
 
 import org.apache.commons.io.FileUtils;
 
@@ -19,21 +19,29 @@ public class PersistenceHelper {
         DATABASE
     }
 
-    public Type type = PersistenceHelper.Type.DATABASE;
-    private static PersistenceHelper ourInstance = new PersistenceHelper();
+    public Type type = PersistenceHelper.Type.FILE;
+    public Context context;
 
-    public static PersistenceHelper getInstance() {
-        return ourInstance;
+    public PersistenceHelper(Context context) {
+        this.context = context;
     }
 
-    private PersistenceHelper() {
-    }
-
-    public void loadItems() {
+    public ArrayList<String> loadItems() {
         switch (type) {
             case FILE:
-                loadItemsFromFile();
+                return loadItemsFromFile();
+            case DATABASE:
+                return null;
+            default:
                 break;
+        }
+        return null;
+    }
+
+    public void persistItems(ArrayList<String> items) {
+        switch (type) {
+            case FILE:
+                writeItems(items);
             case DATABASE:
                 break;
             default:
@@ -43,7 +51,7 @@ public class PersistenceHelper {
 
     private ArrayList<String> loadItemsFromFile() {
         File toDoFile = getToDoFile();
-        ArrayList<String> items = nil;
+        ArrayList<String> items = null;
 
         try {
             items = new ArrayList<String>(FileUtils.readLines(toDoFile));
@@ -66,7 +74,7 @@ public class PersistenceHelper {
     }
 
     private File getToDoFile() {
-        File filesDirectory = getFilesDir();
+        File filesDirectory = context.getFilesDir();
         File toDoFile = new File(filesDirectory, "ToDo.txt");
         return toDoFile;
     }
