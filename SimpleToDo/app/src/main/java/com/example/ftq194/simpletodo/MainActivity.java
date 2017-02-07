@@ -1,10 +1,10 @@
 package com.example.ftq194.simpletodo;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
 
+    private int mSelectedItemPosition = 0;
+    private final int REQUEST_CODE = 20;
     private PersistenceHelper mPersistenceHelper;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -48,8 +50,16 @@ public class MainActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            String selectedItemText = data.getExtras().getString("selectedItemText");
+            items.set(mSelectedItemPosition, selectedItemText);
+        }
+    }
+
     public void onAddItem(View v) {
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
+        EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
         etNewItem.setText("");
@@ -99,7 +109,10 @@ public class MainActivity extends AppCompatActivity {
                                             View view,
                                             int position,
                                             long id) {
-                        System.out.print(position);
+                        Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
+                        mSelectedItemPosition = position;
+                        editItemIntent.putExtra("selectedItemText", items.get(position));
+                        startActivityForResult(editItemIntent, REQUEST_CODE);
                     }
                 }
         );
