@@ -14,6 +14,8 @@ import java.util.ArrayList;
  */
 
 public class PersistenceHelper {
+    private final String filename = "ToDo.txt";
+
     public enum Type {
         FILE,
         DATABASE
@@ -75,7 +77,7 @@ public class PersistenceHelper {
 
     private File getToDoFile() {
         File filesDirectory = context.getFilesDir();
-        File toDoFile = new File(filesDirectory, "ToDo.txt");
+        File toDoFile = new File(filesDirectory, filename);
         return toDoFile;
     }
 }
