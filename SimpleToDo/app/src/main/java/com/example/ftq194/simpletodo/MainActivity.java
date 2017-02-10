@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 //                        mSelectedItemPosition = position;
 //                        editItemIntent.putExtra("selectedItemText", items.get(position));
 //                        startActivityForResult(editItemIntent, REQUEST_CODE);
-                        showEditDialog();
+                        showEditDialog(items.get(position));
                     }
                 }
         );
@@ -137,10 +137,9 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private void showEditDialog() {
+    private void showEditDialog(String item) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        EditItemDialog editItemDialog = EditItemDialog.newInstance("Some Title");
+        EditItemDialog editItemDialog = EditItemDialog.newInstance(item);
         editItemDialog.show(fragmentManager, "fragment_edit_item_dialog");
     }
-
 }

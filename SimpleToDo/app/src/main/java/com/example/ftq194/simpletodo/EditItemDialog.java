@@ -20,19 +20,15 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class EditItemDialog extends DialogFragment {
-
     private EditText mEditText;
 
     public EditItemDialog() {
-        // Empty constructor is required for DialogFragment
-        // Make sure not to add arguments to the constructor
-        // Use `newInstance` instead as shown below
     }
 
     public static EditItemDialog newInstance(String title) {
         EditItemDialog frag = new EditItemDialog();
         Bundle args = new Bundle();
-        args.putString("title", title);
+        args.putString("itemTitle", title);
         frag.setArguments(args);
         return frag;
     }
@@ -46,12 +42,11 @@ public class EditItemDialog extends DialogFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Get field from view
-        mEditText = (EditText) view.findViewById(R.id.txt_your_name);
-        // Fetch arguments from bundle and set title
-        String title = getArguments().getString("title", "Enter Name");
-        getDialog().setTitle(title);
-        // Show soft keyboard automatically and request focus to field
+        mEditText = (EditText)view.findViewById(R.id.item_title);
+        String title = getArguments().getString("itemTitle", "Todo item");
+        mEditText.setText(title);
+
+        // Show soft keyboard automatically and request focus to field.
         mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
