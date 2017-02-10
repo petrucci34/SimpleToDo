@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -18,7 +19,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EditItemDialog.EditItemDialogListener {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
@@ -107,14 +108,8 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent,
-                                            View view,
-                                            int position,
-                                            long id) {
-//                        Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
-//                        mSelectedItemPosition = position;
-//                        editItemIntent.putExtra("selectedItemText", items.get(position));
-//                        startActivityForResult(editItemIntent, REQUEST_CODE);
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        mSelectedItemPosition = position;
                         showEditDialog(items.get(position));
                     }
                 }
@@ -123,10 +118,7 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override
-                    public boolean onItemLongClick(AdapterView<?> adapter,
-                                                   View item,
-                                                   int position,
-                                                   long id) {
+                    public boolean onItemLongClick(AdapterView<?> adapter, View item, int position, long id) {
                         items.remove(position);
                         itemsAdapter.notifyDataSetChanged();
                         mPersistenceHelper.persistItems(items);
@@ -135,6 +127,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    public void onFinishEditDialog(String inputText) {
+        items.set(mSelectedItemPosition, inputText);
+        mPersistenceHelper.persistItems(items);
+        itemsAdapter.notifyDataSetChanged();
     }
 
     private void showEditDialog(String item) {

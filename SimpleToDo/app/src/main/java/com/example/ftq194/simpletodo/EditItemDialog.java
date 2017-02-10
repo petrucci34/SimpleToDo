@@ -4,11 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -19,8 +22,12 @@ import android.view.ViewGroup;
  * Use the {@link EditItemDialog#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditItemDialog extends DialogFragment {
+public class EditItemDialog extends DialogFragment implements TextView.OnEditorActionListener {
     private EditText mEditText;
+
+    public interface EditItemDialogListener {
+        void onFinishEditDialog(String inputText);
+    }
 
     public EditItemDialog() {
     }
@@ -46,8 +53,22 @@ public class EditItemDialog extends DialogFragment {
         String title = getArguments().getString("itemTitle", "Todo item");
         mEditText.setText(title);
 
+        mEditText.setOnEditorActionListener(this);
+
         // Show soft keyboard automatically and request focus to field.
         mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+        if (EditorInfo.IME_ACTION_DONE == actionId) {
+            // Return input text back to activity through the implemented listener.
+            EditItemDialogListener listener = (EditItemDialogListener)getActivity();
+            listener.onFinishEditDialog(mEditText.getText().toString());
+            dismiss();
+            return true;
+        }
+        return false;
     }
 }
