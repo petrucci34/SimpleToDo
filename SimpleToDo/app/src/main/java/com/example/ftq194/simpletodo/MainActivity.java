@@ -2,6 +2,7 @@ package com.example.ftq194.simpletodo;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -110,10 +111,11 @@ public class MainActivity extends AppCompatActivity {
                                             View view,
                                             int position,
                                             long id) {
-                        Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
-                        mSelectedItemPosition = position;
-                        editItemIntent.putExtra("selectedItemText", items.get(position));
-                        startActivityForResult(editItemIntent, REQUEST_CODE);
+//                        Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
+//                        mSelectedItemPosition = position;
+//                        editItemIntent.putExtra("selectedItemText", items.get(position));
+//                        startActivityForResult(editItemIntent, REQUEST_CODE);
+                        showEditDialog();
                     }
                 }
         );
@@ -134,4 +136,11 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+
+    private void showEditDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        EditItemDialog editItemDialog = EditItemDialog.newInstance("Some Title");
+        editItemDialog.show(fragmentManager, "fragment_edit_item_dialog");
+    }
+
 }
