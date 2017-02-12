@@ -13,10 +13,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -28,11 +26,7 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
     private int mSelectedItemPosition = 0;
     private final int REQUEST_CODE = 20;
     private PersistenceHelper mPersistenceHelper;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +42,10 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
 
         setUpListViewListener();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mDatabaseReference = database.getReference("items");
+        mDatabaseReference.setValue("Hello, World!");
+        mDatabaseReference.child("users").setValue("hello");
     }
 
     public void onAddItem(View v) {
@@ -59,41 +54,6 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
         itemsAdapter.add(itemText);
         etNewItem.setText("");
         mPersistenceHelper.persistItems(items);
-    }
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("TODO List")
-                .setUrl(Uri.parse("http://www.korhanbircan.com"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
     }
 
     private void setUpListViewListener() {
