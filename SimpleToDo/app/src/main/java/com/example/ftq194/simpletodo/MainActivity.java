@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -50,15 +51,6 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            String selectedItemText = data.getExtras().getString("selectedItemText");
-            items.set(mSelectedItemPosition, selectedItemText);
-            itemsAdapter.notifyDataSetChanged();
-        }
     }
 
     public void onAddItem(View v) {

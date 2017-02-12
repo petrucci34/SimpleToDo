@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.TextView;
  */
 public class EditItemDialog extends DialogFragment implements TextView.OnEditorActionListener {
     private EditText mEditText;
+    private Button mSubmitButton;
 
     public interface EditItemDialogListener {
         void onFinishEditDialog(String inputText);
@@ -41,8 +43,7 @@ public class EditItemDialog extends DialogFragment implements TextView.OnEditorA
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit_item_dialog, container);
     }
 
@@ -52,23 +53,32 @@ public class EditItemDialog extends DialogFragment implements TextView.OnEditorA
         mEditText = (EditText)view.findViewById(R.id.item_title);
         String title = getArguments().getString("itemTitle", "Todo item");
         mEditText.setText(title);
-
         mEditText.setOnEditorActionListener(this);
 
         // Show soft keyboard automatically and request focus to field.
         mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        mSubmitButton = (Button)view.findViewById(R.id.submit_button);
+        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                passAlongUpdatedTextAndDismiss();
+            }
+        });
     }
 
     @Override
     public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
         if (EditorInfo.IME_ACTION_DONE == actionId) {
-            // Return input text back to activity through the implemented listener.
-            EditItemDialogListener listener = (EditItemDialogListener)getActivity();
-            listener.onFinishEditDialog(mEditText.getText().toString());
-            dismiss();
+            passAlongUpdatedTextAndDismiss();
             return true;
         }
         return false;
+    }
+
+    private void passAlongUpdatedTextAndDismiss() {
+        EditItemDialogListener listener = (EditItemDialogListener)getActivity();
+        listener.onFinishEditDialog(mEditText.getText().toString());
+        dismiss();
     }
 }

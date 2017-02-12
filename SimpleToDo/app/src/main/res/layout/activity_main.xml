@@ -41,5 +41,5 @@
         android:id="@+id/etNewItem"
         android:layout_toLeftOf="@+id/btnAddItem"
         android:layout_toStartOf="@+id/btnAddItem"
-        android:hint="Enter item name" />
+        android:hint="Enter item description" />
 </RelativeLayout>
