@@ -1,22 +1,21 @@
 package com.example.ftq194.simpletodo;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.UUID;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity implements EditItemDialog.EditItemDialogListener {
     ArrayList<String> items;
@@ -43,17 +42,19 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
         setUpListViewListener();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        mDatabaseReference = database.getReference("items");
-        mDatabaseReference.setValue("Hello, World!");
-        mDatabaseReference.child("users").setValue("hello");
+        String uniqueId = UUID.randomUUID().toString();
+        mDatabaseReference = database.getReference(uniqueId);
     }
 
-    public void onAddItem(View v) {
+    public void onAddItem(View view) {
         EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
         etNewItem.setText("");
         mPersistenceHelper.persistItems(items);
+
+        DatabaseReference pushedReference = mDatabaseReference.push();
+        pushedReference.setValue(itemText);
     }
 
     private void setUpListViewListener() {
