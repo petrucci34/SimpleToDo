@@ -1,12 +1,13 @@
 package com.example.ftq194.simpletodo;
 
 import android.content.Context;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 /**
@@ -15,17 +16,20 @@ import java.util.ArrayList;
 
 public class PersistenceHelper {
     private final String filename = "ToDo.txt";
+    private DatabaseReference mDatabaseReference = null;
 
     public enum Type {
         FILE,
         DATABASE
     }
-
-    public Type type = PersistenceHelper.Type.FILE;
+    public Type type = PersistenceHelper.Type.DATABASE;
     public Context context;
 
     public PersistenceHelper(Context context) {
         this.context = context;
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mDatabaseReference = database.getReference();
     }
 
     public ArrayList<String> loadItems() {
@@ -33,11 +37,11 @@ public class PersistenceHelper {
             case FILE:
                 return loadItemsFromFile();
             case DATABASE:
-                return null;
+                return new ArrayList<String>();
             default:
                 break;
         }
-        return null;
+        return new ArrayList<String>();
     }
 
     public void persistItems(ArrayList<String> items) {
@@ -45,6 +49,7 @@ public class PersistenceHelper {
             case FILE:
                 writeItems(items);
             case DATABASE:
+                writeToDatabase(items);
                 break;
             default:
                 break;
@@ -63,6 +68,12 @@ public class PersistenceHelper {
         }
 
         return items;
+    }
+
+    private void writeToDatabase(ArrayList<String> items) {
+//        for (for int index = 0; index < items.size(); ++index) {
+            mDatabaseReference.setValue(items);
+//        }
     }
 
     private void writeItems(ArrayList<String> items) {

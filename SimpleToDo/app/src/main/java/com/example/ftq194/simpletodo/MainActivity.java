@@ -9,76 +9,63 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
-import java.util.UUID;
 
-import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity implements EditItemDialog.EditItemDialogListener {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
-    ListView lvItems;
+    ListView listView;
 
     private int mSelectedItemPosition = 0;
     private final int REQUEST_CODE = 20;
     private PersistenceHelper mPersistenceHelper;
-    private DatabaseReference mDatabaseReference;
+    private final String LOG_TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        listView = (ListView)findViewById(R.id.lvItems);
         mPersistenceHelper = new PersistenceHelper(getApplicationContext());
-
-        lvItems = (ListView)findViewById(R.id.lvItems);
         items = mPersistenceHelper.loadItems();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-        lvItems.setAdapter(itemsAdapter);
+        listView.setAdapter(itemsAdapter);
 
         setUpListViewListener();
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        String uniqueId = UUID.randomUUID().toString();
-        mDatabaseReference = database.getReference(uniqueId);
     }
 
     public void onAddItem(View view) {
-        EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
-        String itemText = etNewItem.getText().toString();
+        EditText editText = (EditText)findViewById(R.id.etNewItem);
+        String itemText = editText.getText().toString();
         itemsAdapter.add(itemText);
-        etNewItem.setText("");
+        editText.setText("");
         mPersistenceHelper.persistItems(items);
-
-        DatabaseReference pushedReference = mDatabaseReference.push();
-        pushedReference.setValue(itemText);
     }
 
     private void setUpListViewListener() {
-        lvItems.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        mSelectedItemPosition = position;
-                        showEditDialog(items.get(position));
-                    }
+        listView.setOnItemClickListener(
+            new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    mSelectedItemPosition = position;
+                    showEditDialog(items.get(position));
                 }
+            }
         );
 
-        lvItems.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapter, View item, int position, long id) {
-                        items.remove(position);
-                        itemsAdapter.notifyDataSetChanged();
-                        mPersistenceHelper.persistItems(items);
+        listView.setOnItemLongClickListener(
+            new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapter, View item, int position, long id) {
+                    items.remove(position);
+                    itemsAdapter.notifyDataSetChanged();
+                    mPersistenceHelper.persistItems(items);
 
-                        return true;
-                    }
+                    return true;
                 }
+            }
         );
     }
 
