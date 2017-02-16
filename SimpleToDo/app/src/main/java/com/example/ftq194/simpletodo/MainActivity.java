@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements EditItemDialog.EditItemDialogListener {
     ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
+    ArrayAdapter<String> mItemsAdapter;
     ListView listView;
 
     private int mSelectedItemPosition = 0;
@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.lvItems);
-        mPersistenceHelper = new PersistenceHelper(getApplicationContext());
+        mPersistenceHelper = new PersistenceHelper(getApplicationContext(), mItemsAdapter);
         items = mPersistenceHelper.loadItems();
-        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(itemsAdapter);
+        mItemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        listView.setAdapter(mItemsAdapter);
 
         setUpListViewListener();
     }
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
     public void onAddItem(View view) {
         EditText editText = (EditText)findViewById(R.id.etNewItem);
         String itemText = editText.getText().toString();
-        itemsAdapter.add(itemText);
+        mItemsAdapter.add(itemText);
         editText.setText("");
         mPersistenceHelper.persistItems(items);
     }
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
                 @Override
                 public boolean onItemLongClick(AdapterView<?> adapter, View item, int position, long id) {
                     items.remove(position);
-                    itemsAdapter.notifyDataSetChanged();
+                    mItemsAdapter.notifyDataSetChanged();
                     mPersistenceHelper.persistItems(items);
 
                     return true;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
     public void onFinishEditDialog(String inputText) {
         items.set(mSelectedItemPosition, inputText);
         mPersistenceHelper.persistItems(items);
-        itemsAdapter.notifyDataSetChanged();
+        mItemsAdapter.notifyDataSetChanged();
     }
 
     private void showEditDialog(String item) {

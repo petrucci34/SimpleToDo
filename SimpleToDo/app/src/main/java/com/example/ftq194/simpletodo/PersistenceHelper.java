@@ -1,8 +1,15 @@
 package com.example.ftq194.simpletodo;
 
 import android.content.Context;
+import android.widget.ArrayAdapter;
+
+import com.google.firebase.auth.ActionCodeResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +22,11 @@ import java.util.UUID;
  */
 
 public class PersistenceHelper {
-    private final String filename = "ToDo.txt";
+    private final String LIST_NAME = "ToDo";
+    private final String FILENAME = LIST_NAME + ".txt";
     private DatabaseReference mDatabaseReference = null;
+    private ArrayList<String> mLoadedList = new ArrayList<String>();
+    private ArrayAdapter<String> mArrayAdapter = null;
 
     public enum Type {
         FILE,
@@ -25,11 +35,25 @@ public class PersistenceHelper {
     public Type type = PersistenceHelper.Type.DATABASE;
     public Context context;
 
-    public PersistenceHelper(Context context) {
+    public PersistenceHelper(Context context, ArrayAdapter<String> arrayAdapter) {
         this.context = context;
+        mArrayAdapter = arrayAdapter;
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         mDatabaseReference = database.getReference();
+
+        mDatabaseReference.child(LIST_NAME).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mLoadedList = (ArrayList<String>) dataSnapshot.getValue();
+                        mArrayAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
     }
 
     public ArrayList<String> loadItems() {
@@ -37,7 +61,7 @@ public class PersistenceHelper {
             case FILE:
                 return loadItemsFromFile();
             case DATABASE:
-                return new ArrayList<String>();
+                return mLoadedList;
             default:
                 break;
         }
@@ -71,9 +95,7 @@ public class PersistenceHelper {
     }
 
     private void writeToDatabase(ArrayList<String> items) {
-//        for (for int index = 0; index < items.size(); ++index) {
-            mDatabaseReference.setValue(items);
-//        }
+        mDatabaseReference.child(LIST_NAME).setValue(items);
     }
 
     private void writeItems(ArrayList<String> items) {
@@ -88,7 +110,7 @@ public class PersistenceHelper {
 
     private File getToDoFile() {
         File filesDirectory = context.getFilesDir();
-        File toDoFile = new File(filesDirectory, filename);
+        File toDoFile = new File(filesDirectory, FILENAME);
         return toDoFile;
     }
 }
