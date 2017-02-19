@@ -3,7 +3,6 @@ package com.example.ftq194.simpletodo;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 
-import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,10 +10,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 /**
@@ -32,7 +31,7 @@ public class PersistenceHelper {
         FILE,
         DATABASE
     }
-    public Type type = PersistenceHelper.Type.DATABASE;
+    public Type type = PersistenceHelper.Type.FILE;
     public Context context;
 
     public PersistenceHelper(Context context, ArrayAdapter<String> arrayAdapter) {
@@ -72,6 +71,7 @@ public class PersistenceHelper {
         switch (type) {
             case FILE:
                 writeItems(items);
+                break;
             case DATABASE:
                 writeToDatabase(items);
                 break;
