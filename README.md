@@ -5,9 +5,11 @@ Time spent: ~2 hours.
 Completed user stories:
 * View a list of existing items.
 * Add a new item.
-* Persist the list across app launches.
 * Remove an item. Long-pressing items deletes the item from the list.
+* Update an item. Tapping on an item launches a dialog that lets the user update the item.
+* Persist the list across app launches.
+
 
 Below is a walkthrough of the basic functionality:
 
-![](https://github.com/petrucci34/SimpleToDo/blob/master/simpleToDoDemo.gif)
+
