@@ -12,4 +12,4 @@ Completed user stories:
 
 Below is a walkthrough of the basic functionality:
 
-
+![](https://github.com/petrucci34/SimpleToDo/blob/master/simpleToDoDemo.gif)
