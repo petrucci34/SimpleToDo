@@ -1,7 +1,6 @@
 package com.example.ftq194.simpletodo;
 
 import android.content.Context;
-import android.widget.ArrayAdapter;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,7 +24,6 @@ public class PersistenceHelper {
     private final String FILENAME = LIST_NAME + ".txt";
     private DatabaseReference mDatabaseReference = null;
     private ArrayList<String> mLoadedList = new ArrayList<String>();
-    private ArrayAdapter<String> mArrayAdapter = null;
 
     public enum Type {
         FILE,
@@ -34,25 +32,22 @@ public class PersistenceHelper {
     public Type type = PersistenceHelper.Type.FILE;
     public Context context;
 
-    public PersistenceHelper(Context context, ArrayAdapter<String> arrayAdapter) {
+    public PersistenceHelper(Context context) {
         this.context = context;
-        mArrayAdapter = arrayAdapter;
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         mDatabaseReference = database.getReference();
 
         mDatabaseReference.child(LIST_NAME).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        mLoadedList = (ArrayList<String>) dataSnapshot.getValue();
-                        mArrayAdapter.notifyDataSetChanged();
-                    }
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
     }
 
     public ArrayList<String> loadItems() {

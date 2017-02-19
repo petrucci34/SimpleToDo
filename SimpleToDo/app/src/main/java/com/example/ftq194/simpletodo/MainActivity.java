@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements EditItemDialog.Ed
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.lvItems);
-        mPersistenceHelper = new PersistenceHelper(getApplicationContext(), mItemsAdapter);
+        mPersistenceHelper = new PersistenceHelper(getApplicationContext());
         items = mPersistenceHelper.loadItems();
         mItemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         listView.setAdapter(mItemsAdapter);
