@@ -12,6 +12,6 @@ Completed user stories:
 
 Below is a walkthrough of the basic functionality:
 
-<img src="https://github.com/petrucci34/SimpleToDo/blob/master/Screen%20Shot%202017-05-13%20at%209.35.04%20PM.png" width="250">
+<img src="https://raw.githubusercontent.com/petrucci34/SimpleToDo/master/Screen%20Shot%202017-05-13%20at%209.35.04%20PM.png" width="250">
 
 ![](https://github.com/petrucci34/SimpleToDo/blob/master/simpleToDoDemo.gif)
